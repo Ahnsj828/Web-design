@@ -1,3 +1,0 @@
-# Web-design
-
-## CSS effect
