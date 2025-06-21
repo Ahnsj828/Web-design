@@ -17,7 +17,7 @@ body {
   overflow: hidden;
 }
 
-.loader::before {
+/* .loader::before {
   content: "";
   position: absolute;
   top: -100%;
@@ -38,5 +38,44 @@ body {
   }
   100% {
     transform: rotate(360deg) translateY(0);
+  }
+} */
+
+.loader::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  border-radius: 45%;
+  animation: liquid 6s linear infinite;
+  background: rgba(255, 80, 80, 0.4); /* 초기 색상 */
+}
+
+@keyframes liquid {
+  0% {
+    transform: rotate(0deg) translateY(0);
+    background: rgba(255, 80, 80, 0.4); /* 고급진 빨강 */
+  }
+  16% {
+    background: rgba(255, 140, 0, 0.4); /* 고급진 주황 */
+  }
+  33% {
+    background: rgba(255, 215, 0, 0.4); /* 고급진 노랑 */
+  }
+  50% {
+    transform: rotate(180deg) translateY(20%);
+    background: rgba(100, 220, 120, 0.4); /* 고급진 초록 */
+  }
+  66% {
+    background: rgba(80, 160, 255, 0.4); /* 고급진 파랑 */
+  }
+  83% {
+    background: rgba(160, 100, 255, 0.4); /* 고급진 보라 */
+  }
+  100% {
+    transform: rotate(360deg) translateY(0);
+    background: rgba(255, 80, 80, 0.4); /* 다시 빨강 */
   }
 }
