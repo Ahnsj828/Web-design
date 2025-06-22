@@ -1,4 +1,4 @@
-body {
+/* body {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,7 +17,7 @@ body {
   overflow: hidden;
 }
 
-/* .loader::before {
+.loader::before {
   content: "";
   position: absolute;
   top: -100%;
@@ -41,6 +41,26 @@ body {
   }
 } */
 
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #555;
+  height: 100vh;
+  margin: 0;
+}
+
+.loader {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 80, 80, 1); /* 초기 고급 빨강 */
+  box-shadow: inset -5px -5px 15px #0c1a25, inset 5px 5px 15px #1a2b3a;
+  overflow: hidden;
+  animation: colorShift 12s linear infinite; /* 색상 애니메이션 추가 */
+}
+
 .loader::before {
   content: "";
   position: absolute;
@@ -48,34 +68,43 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
+  background: rgba(255, 255, 255, 0.15); /* 고정된 물결 색 */
   border-radius: 45%;
-  animation: liquid 6s linear infinite;
-  background: rgba(255, 80, 80, 0.4); /* 초기 색상 */
+  animation: liquid 4s linear infinite; /* 파도는 반복 */
 }
 
 @keyframes liquid {
   0% {
     transform: rotate(0deg) translateY(0);
-    background: rgba(255, 80, 80, 0.4); /* 고급진 빨강 */
-  }
-  16% {
-    background: rgba(255, 140, 0, 0.4); /* 고급진 주황 */
-  }
-  33% {
-    background: rgba(255, 215, 0, 0.4); /* 고급진 노랑 */
   }
   50% {
     transform: rotate(180deg) translateY(20%);
-    background: rgba(100, 220, 120, 0.4); /* 고급진 초록 */
-  }
-  66% {
-    background: rgba(80, 160, 255, 0.4); /* 고급진 파랑 */
-  }
-  83% {
-    background: rgba(160, 100, 255, 0.4); /* 고급진 보라 */
   }
   100% {
     transform: rotate(360deg) translateY(0);
-    background: rgba(255, 80, 80, 0.4); /* 다시 빨강 */
   }
+}
+
+@keyframes colorShift {
+  0% {
+    background: rgba(255, 80, 80, 1);
+  } /* 레드 */
+  16% {
+    background: rgba(255, 140, 0, 1);
+  } /* 오렌지 */
+  33% {
+    background: rgba(255, 215, 0, 1);
+  } /* 옐로우 */
+  50% {
+    background: rgba(100, 220, 120, 1);
+  } /* 그린 */
+  66% {
+    background: rgba(80, 160, 255, 1);
+  } /* 블루 */
+  83% {
+    background: rgba(160, 100, 255, 1);
+  } /* 퍼플 */
+  100% {
+    background: rgba(255, 80, 80, 1);
+  } /* 다시 레드 */
 }
