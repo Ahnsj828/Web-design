@@ -29,6 +29,7 @@
 
 .container .text {
   position: absolute;
+  z-index: 10;
   bottom: 15px;
   left: 15px;
   color: #fff;
