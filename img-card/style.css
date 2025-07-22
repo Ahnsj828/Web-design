@@ -4,6 +4,7 @@
   height: 250px;
   overflow: hidden;
   border-radius: 12px;
+  margin: 20px;
 }
 
 .container img {
@@ -26,6 +27,16 @@
     rgba(0, 0, 0, 0.4) 30%,
     rgba(0, 0, 0, 0.8) 100%
   );
+}
+
+.container .title {
+  position: absolute;
+  z-index: 10;
+  bottom: 15px;
+  left: 15px;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .container .text {
