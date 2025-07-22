@@ -1,8 +1,10 @@
 .container {
+  display: flex;
+  justify-content: center;
   position: relative;
+  overflow: hidden;
   width: 400px;
   height: 250px;
-  overflow: hidden;
   border-radius: 12px;
   margin: 20px;
 }
@@ -23,28 +25,30 @@
   height: 50%;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.4) 30%,
-    rgba(0, 0, 0, 0.8) 100%
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.4) 20%,
+    rgba(0, 0, 0, 0.9) 100%
   );
+}
+.container .content {
+  position: absolute;
+  bottom: 15px;
+  z-index: 5;
+  width: 87%;
+  margin-bottom: 10px;
 }
 
 .container .title {
-  position: absolute;
-  z-index: 10;
   bottom: 15px;
   left: 15px;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 500;
 }
 
 .container .text {
-  position: absolute;
-  z-index: 10;
-  bottom: 15px;
-  left: 15px;
+  margin-top: 3px;
   color: #fff;
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 300;
 }
