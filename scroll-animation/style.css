@@ -17,12 +17,21 @@ h1 {
   margin: 60px auto;
   background-color: #00ff88;
   opacity: 0;
-  transform: translateX(-100px);
   transition: all 0.6s ease-out;
   border-radius: 10px;
 }
 
-/* 스크롤되면 보여질 상태 */
+/* 왼쪽에서 나타나는 기본 상태 */
+.box.left {
+  transform: translateX(-150px);
+}
+
+/* 오른쪽에서 나타나는 기본 상태 */
+.box.right {
+  transform: translateX(150px);
+}
+
+/* show가 붙으면 원래 위치로 */
 .box.show {
   opacity: 1;
   transform: translateX(0);
