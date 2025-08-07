@@ -27,7 +27,7 @@ body {
 .card-image svg {
   width: 40px;
   height: 40px;
-  color: #d3d3d3; /* 하늘색 계열 */
+  color: #d3d3d3;
 }
 
 .card-content {
@@ -63,31 +63,31 @@ body {
 }
 
 .btn {
-  padding: 9px 20px; /* ✅ 버튼 안 여백 더 줌 */
-  font-size: 0.75rem; /* ✅ 글자 더 작게 */
+  padding: 9px 20px;
+  font-size: 0.75rem;
   border-radius: 999px;
   cursor: pointer;
   transition: 0.3s ease;
 }
 
 .btn.outline {
-  border: 1.2px solid #333; /* ✅ 좀 더 연한 테두리 */
+  border: 1.2px solid #333;
   background: transparent;
   color: #333;
 }
 
 .btn.outline:hover {
   background: #f5f5f5;
-  border: 1.2px solid #aaa; /* ✅ hover 시 연한 테두리 */
+  border: 1.2px solid #aaa;
   color: #aaa;
 }
 
 .btn.filled {
-  background-color: #333; /* ✅ 연한 배경색 */
+  background-color: #333;
   color: #fff;
   border: none;
 }
 
 .btn.filled:hover {
-  background-color: #aaa; /* ✅ hover 시 더 연하게 */
+  background-color: #aaa;
 }
