@@ -4,6 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style></style>
   </head>
-  <body></body>
+  <body>
+    <button id="openModal">Open Modal</button>
+
+    <div class="modal" id="modal">
+      <div class="modal-inner">
+        <h2>Cool tutorial!</h2>
+        <p>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corrupti
+          laudantium minus ipsam voluptates, inventore voluptate maxime a nihil
+          eum optio delectus officiis. Eligendi sequi corrupti asperiores illo
+          explicabo dignissimos eius.
+        </p>
+        <button id="closeModal">Close</button>
+      </div>
+    </div>
+    <script>
+      const openBtn = document.getElementById("openModal");
+      const closeBtn = document.getElementById("closeModal");
+      const modal = document.getElementById("modal");
+
+      openBtn.addEventListener("click", () => {
+        modal.classList.add("open");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        modal.classList.remove("open");
+      });
+    </script>
+  </body>
 </html>
