@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>팝업 예제 (한 파일/안정판)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        margin: 24px;
+      }
+      h1 {
+        margin: 0 0 12px;
+      }
+      button {
+        padding: 8px 14px;
+        border: 1px solid #bbb;
+        background: #f7f7f7;
+        cursor: pointer;
+      }
+    </style>
+
+    <!-- ✅ 팝업에 들어갈 완성 HTML을 텍스트로 보관 (실행 안 됨) -->
+    <script id="popup-template" type="text/plain">
+      <!DOCTYPE html>
+      <html lang="ko">
+      <head>
+        <meta charset="UTF-8" />
+        <title>팝업 내용</title>
+        <style>
+          body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; }
+          h2 { margin: 0 0 12px; }
+          button { margin-top: 12px; padding: 8px 14px; }
+        </style>
+      </head>
+      <body>
+        <h2>이건 팝업창입니다!</h2>
+        <p>브라우저의 <b>독립된 새 창</b>으로 열렸습니다.</p>
+        <button onclick="window.close()">닫기</button>
+      </body>
+      </html>
+    </script>
+  </head>
+  <body>
+    <h1>팝업 예제</h1>
+    <button id="btnOpen">팝업 열기</button>
+
+    <script>
+      function openPopup() {
+        // 1) 템플릿에서 HTML 원문 가져오기 (백틱/문자열 이슈 없음)
+        var html = document.getElementById("popup-template").textContent;
+
+        // 2) Blob URL 생성
+        var blob = new Blob([html], { type: "text/html" });
+        var url = URL.createObjectURL(blob);
+
+        // 3) 사용자 제스처 안에서 새 창 열기
+        var features = "width=420,height=340,top=200,left=300,noopener=yes";
+        var win = window.open(url, "popupWindow", features);
+
+        if (!win) {
+          alert(
+            "팝업이 차단되었습니다. 브라우저에서 팝업 허용으로 변경해주세요."
+          );
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        win.focus();
+        // 4) 메모리 정리
+        setTimeout(function () {
+          URL.revokeObjectURL(url);
+        }, 3000);
+      }
+
+      // 전역 함수 없이 안전하게 이벤트 연결
+      document.getElementById("btnOpen").addEventListener("click", openPopup);
+    </script>
+  </body>
+</html>

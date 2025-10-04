@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>팝업창 예제</title>
+    <script>
+      function openPopup() {
+        // window.open(URL, 창이름, 옵션)
+        window.open(
+          "popup.html", // 팝업에 띄울 페이지
+          "popupWindow", // 창 이름
+          "width=400,height=300,top=200,left=300" // 크기와 위치
+        );
+      }
+    </script>
+  </head>
+  <body>
+    <h1>팝업창 예제</h1>
+    <button onclick="openPopup()">팝업 열기</button>
+  </body>
+</html>
