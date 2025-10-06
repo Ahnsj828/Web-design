@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>모달 기본 틀 (Minimal)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* 스크롤 잠금 */
+      body.modal-open {
+        overflow: hidden;
+      }
+
+      /* 오버레이 */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 999;
+      }
+      .overlay.is-active {
+        display: block;
+      }
+
+      /* 모달 */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal.is-active {
+        display: flex;
+      }
+
+      /* 패널 */
+      .modal__panel {
+        width: min(480px, 92vw);
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        outline: none;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: transform 0.18s ease, opacity 0.18s ease;
+      }
+      .modal.is-active .modal__panel {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eee;
+      }
+      .modal__header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .modal__close {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .modal__body {
+        padding: 18px;
+      }
+
+      /* 데모용 버튼 */
+      .btn {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main style="padding: 20px">
+      <button type="button" id="openBasic" class="btn">모달 열기</button>
+    </main>
+
+    <!-- 오버레이 -->
+    <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+    <!-- 모달 -->
+    <div
+      id="basicModal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="basicModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal__panel" tabindex="-1">
+        <div class="modal__header">
+          <h2 id="basicModalTitle">기본 모달</h2>
+          <button
+            type="button"
+            class="modal__close"
+            data-close
+            aria-label="닫기"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal__body">
+          <p>가장 단순한 모달 기본 틀입니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const overlay = document.getElementById("overlay");
+        const modal = document.getElementById("basicModal");
+        const panel = modal.querySelector(".modal__panel");
+        const openBtn = document.getElementById("openBasic");
+        const closeBtn = modal.querySelector("[data-close]");
+
+        let lastFocused = null;
+
+        const lock = () => document.body.classList.add("modal-open");
+        const unlock = () => document.body.classList.remove("modal-open");
+
+        function openModal() {
+          lastFocused = document.activeElement;
+          overlay.classList.add("is-active");
+          modal.classList.add("is-active");
+          overlay.setAttribute("aria-hidden", "false");
+          modal.setAttribute("aria-hidden", "false");
+          lock();
+          panel.focus(); // 첫 포커스
+        }
+
+        function closeModal() {
+          overlay.classList.remove("is-active");
+          modal.classList.remove("is-active");
+          overlay.setAttribute("aria-hidden", "true");
+          modal.setAttribute("aria-hidden", "true");
+          unlock();
+          if (lastFocused && lastFocused.focus) lastFocused.focus();
+        }
+
+        openBtn.addEventListener("click", openModal);
+        closeBtn.addEventListener("click", closeModal);
+        overlay.addEventListener("click", closeModal);
+
+        document.addEventListener("keydown", (e) => {
+          if (!modal.classList.contains("is-active")) return;
+          if (e.key === "Escape") {
+            e.preventDefault();
+            closeModal();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

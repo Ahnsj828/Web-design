@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>로그인 모달 (cart UX)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* 스크롤 잠금 */
+      body.modal-open {
+        overflow: hidden;
+      }
+
+      /* 오버레이 (공용) */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 999;
+      }
+      .overlay.is-active {
+        display: block;
+      }
+
+      /* 모달 래퍼 */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal.is-active {
+        display: flex;
+      }
+
+      /* 패널 + 전환 (cart 모달과 동일 네이밍 사용 권장) */
+      .modal__panel {
+        width: min(440px, 92vw);
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        outline: none;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: transform 0.18s ease, opacity 0.18s ease;
+      }
+      .modal.is-active .modal__panel {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eee;
+      }
+      .modal__header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .modal__close {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .modal__body {
+        padding: 18px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .btn:hover {
+        background: #f7f7f7;
+      }
+
+      /* 데모용 네비 (프로젝트에서는 기존 헤더 사용) */
+      header {
+        padding: 14px 16px;
+        border-bottom: 1px solid #eee;
+      }
+      nav ul {
+        display: flex;
+        gap: 12px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+      nav a,
+      nav button {
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+      }
+      .rbt-login-modal-activation {
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 데모 네비: 실제 프로젝트에선 기존 헤더 유지 -->
+    <header>
+      <nav>
+        <ul>
+          <li><a href="#">홈</a></li>
+          <li><a href="#">장바구니</a></li>
+          <li class="rbt-login-modal-activation">
+            <a href="#" id="loginLink">로그인</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- 공용 오버레이 (프로젝트의 #overlay를 그대로 사용 권장) -->
+    <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+    <!-- 로그인 모달 -->
+    <div
+      id="loginModal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="loginModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal__panel" tabindex="-1">
+        <div class="modal__header">
+          <h2 id="loginModalTitle">로그인</h2>
+          <button
+            type="button"
+            class="modal__close"
+            data-close-modal
+            aria-label="닫기"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal__body">
+          <button
+            type="button"
+            id="btnGoogleLogin"
+            class="btn"
+            aria-label="Google로 로그인"
+          >
+            🔐 Google로 로그인
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const overlay = document.getElementById("overlay"); // 공용
+        const loginModal = document.getElementById("loginModal"); // 대상 모달
+        const panel = loginModal.querySelector(".modal__panel");
+        const openers = document.querySelectorAll(
+          ".rbt-login-modal-activation a, .rbt-login-modal-activation button"
+        );
+        const closers = loginModal.querySelectorAll("[data-close-modal]");
+
+        // 스크롤 잠금/해제
+        const lock = () => document.body.classList.add("modal-open");
+        const unlock = () => document.body.classList.remove("modal-open");
+
+        // 포커스 가능한 요소
+        const focusableSelector = [
+          "a[href]",
+          "button:not([disabled])",
+          "textarea:not([disabled])",
+          "input:not([disabled])",
+          "select:not([disabled])",
+          '[tabindex]:not([tabindex="-1"])',
+        ].join(",");
+        const getFocusable = (container) =>
+          Array.from(container.querySelectorAll(focusableSelector)).filter(
+            (el) => el.offsetParent !== null
+          );
+
+        let lastFocused = null;
+
+        function openLoginModal() {
+          lastFocused = document.activeElement;
+
+          overlay.classList.add("is-active");
+          loginModal.classList.add("is-active");
+          overlay.setAttribute("aria-hidden", "false");
+          loginModal.setAttribute("aria-hidden", "false");
+          lock();
+
+          const focusables = getFocusable(loginModal);
+          (focusables[0] || panel).focus();
+        }
+
+        function closeLoginModal() {
+          overlay.classList.remove("is-active");
+          loginModal.classList.remove("is-active");
+          overlay.setAttribute("aria-hidden", "true");
+          loginModal.setAttribute("aria-hidden", "true");
+          unlock();
+
+          if (lastFocused && lastFocused.focus) lastFocused.focus();
+        }
+
+        // 열기 트리거 (기존 구조 존중)
+        openers.forEach((opener) => {
+          opener.addEventListener("click", (e) => {
+            e.preventDefault();
+            openLoginModal();
+          });
+        });
+
+        // 닫기 버튼
+        closers.forEach((btn) =>
+          btn.addEventListener("click", closeLoginModal)
+        );
+
+        // 오버레이 클릭 시 닫기(공용 overlay 가정)
+        overlay.addEventListener("click", () => {
+          if (loginModal.classList.contains("is-active")) closeLoginModal();
+        });
+
+        // ESC & Tab 포커스 트랩
+        document.addEventListener("keydown", (e) => {
+          if (!loginModal.classList.contains("is-active")) return;
+
+          const focusables = getFocusable(loginModal);
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+
+          if (e.key === "Escape") {
+            e.preventDefault();
+            closeLoginModal();
+            return;
+          }
+
+          if (e.key === "Tab" && focusables.length) {
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        });
+
+        // Google 로그인 버튼 (연동 Hook)
+        const googleBtn = document.getElementById("btnGoogleLogin");
+        if (googleBtn) {
+          googleBtn.addEventListener("click", () => {
+            // TODO: 실제 OAuth 연동 (예: location.href = '/auth/google')
+            console.log("Google 로그인 시작");
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
