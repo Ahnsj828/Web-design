@@ -2,9 +2,20 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title>모달 기본 틀 (Minimal)</title>
+    <title>모달 기본 틀 (Minimal – 진단판)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+      .btn {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
       /* 스크롤 잠금 */
       body.modal-open {
         overflow: hidden;
@@ -19,22 +30,21 @@
         z-index: 999;
       }
       .overlay.is-active {
-        display: block;
-      }
+        display: block !important;
+      } /* ← 충돌 진단용 임시 */
 
-      /* 모달 */
+      /* 모달 래퍼 */
       .modal {
         display: none;
         position: fixed;
         inset: 0;
         z-index: 1000;
-        display: flex;
         align-items: center;
         justify-content: center;
       }
       .modal.is-active {
-        display: flex;
-      }
+        display: flex !important;
+      } /* ← 충돌 진단용 임시 */
 
       /* 패널 */
       .modal__panel {
@@ -72,15 +82,6 @@
       }
       .modal__body {
         padding: 18px;
-      }
-
-      /* 데모용 버튼 */
-      .btn {
-        padding: 10px 14px;
-        border: 1px solid #ddd;
-        background: #fff;
-        border-radius: 8px;
-        cursor: pointer;
       }
     </style>
   </head>
@@ -120,41 +121,62 @@
     </div>
 
     <script>
-      (function () {
+      // DOM 안전 바인딩
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initBasicModal);
+      } else {
+        initBasicModal();
+      }
+
+      function initBasicModal() {
         const overlay = document.getElementById("overlay");
         const modal = document.getElementById("basicModal");
         const panel = modal.querySelector(".modal__panel");
         const openBtn = document.getElementById("openBasic");
         const closeBtn = modal.querySelector("[data-close]");
 
-        let lastFocused = null;
+        if (!overlay || !modal || !openBtn || !panel || !closeBtn) {
+          console.warn("[basic] 필수 요소 누락", {
+            overlay,
+            modal,
+            openBtn,
+            panel,
+            closeBtn,
+          });
+          return;
+        }
 
+        let lastFocused = null;
         const lock = () => document.body.classList.add("modal-open");
         const unlock = () => document.body.classList.remove("modal-open");
 
         function openModal() {
+          console.debug("[basic] openModal");
           lastFocused = document.activeElement;
           overlay.classList.add("is-active");
           modal.classList.add("is-active");
           overlay.setAttribute("aria-hidden", "false");
           modal.setAttribute("aria-hidden", "false");
           lock();
-          panel.focus(); // 첫 포커스
+          panel.focus();
         }
-
         function closeModal() {
+          console.debug("[basic] closeModal");
           overlay.classList.remove("is-active");
           modal.classList.remove("is-active");
           overlay.setAttribute("aria-hidden", "true");
           modal.setAttribute("aria-hidden", "true");
           unlock();
-          if (lastFocused && lastFocused.focus) lastFocused.focus();
+          lastFocused?.focus?.();
         }
 
-        openBtn.addEventListener("click", openModal);
+        openBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.debug("[basic] open button click");
+          openModal();
+        });
         closeBtn.addEventListener("click", closeModal);
         overlay.addEventListener("click", closeModal);
-
         document.addEventListener("keydown", (e) => {
           if (!modal.classList.contains("is-active")) return;
           if (e.key === "Escape") {
@@ -162,7 +184,10 @@
             closeModal();
           }
         });
-      })();
+
+        // 콘솔 수동 열기 훅 (테스트용)
+        window.__openBasicManually = openModal;
+      }
     </script>
   </body>
 </html>
