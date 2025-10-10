@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>정석 비모달 팝업 - Popover</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        padding: 24px;
+      }
+      .btn {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* 팝오버 박스 기본 스타일 */
+      .popover-card {
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        background: #fff;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        max-width: 280px;
+      }
+      .popover-title {
+        margin: 0 0 6px;
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .popover-desc {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      /* (선택) 팝오버 화살표 느낌 */
+      .popover-card::before {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        border-left: 1px solid #e5e5e5;
+        border-top: 1px solid #e5e5e5;
+        transform: rotate(45deg);
+        top: -6px;
+        left: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Popover API 데모</h1>
+    <p>버튼을 눌러 **비모달** 팝오버를 열고 닫아보세요.</p>
+
+    <button
+      class="btn"
+      id="helpBtn"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="helpPopover"
+    >
+      도움말
+    </button>
+
+    <!-- 핵심: popover 속성 -->
+    <div
+      id="helpPopover"
+      class="popover-card"
+      popover="manual"
+      role="dialog"
+      aria-labelledby="pvTitle"
+      aria-describedby="pvDesc"
+    >
+      <h2 id="pvTitle" class="popover-title">팝오버 도움말</h2>
+      <p id="pvDesc" class="popover-desc">
+        이 팝업은 Popover API를 사용한 비모달 팝오버입니다. 페이지 이용은 계속
+        가능합니다.
+      </p>
+    </div>
+
+    <script>
+      const btn = document.getElementById("helpBtn");
+      const pv = document.getElementById("helpPopover");
+
+      // 지원 여부 점검 (구형 브라우저 fallback)
+      const supportsPopover =
+        HTMLElement.prototype.hasOwnProperty("showPopover");
+
+      function open() {
+        if (supportsPopover) {
+          pv.showPopover(); // 표준 API
+          btn.setAttribute("aria-expanded", "true");
+        } else {
+          // Fallback: 단순 표시/숨김
+          pv.style.position = "absolute";
+          const r = btn.getBoundingClientRect();
+          pv.style.left = r.left + window.scrollX + "px";
+          pv.style.top = r.bottom + window.scrollY + 8 + "px";
+          pv.style.display = "block";
+          btn.setAttribute("aria-expanded", "true");
+        }
+      }
+
+      function close() {
+        if (supportsPopover) {
+          pv.hidePopover();
+        } else {
+          pv.style.display = "none";
+        }
+        btn.setAttribute("aria-expanded", "false");
+      }
+
+      // 토글
+      btn.addEventListener("click", () => {
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        expanded ? close() : open();
+      });
+
+      // 바깥 클릭 시 닫기(간단 처리)
+      document.addEventListener("click", (e) => {
+        if (e.target === btn || pv.contains(e.target)) return;
+        if (btn.getAttribute("aria-expanded") === "true") close();
+      });
+
+      // ESC 닫기
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          btn.getAttribute("aria-expanded") === "true"
+        ) {
+          close();
+          btn.focus(); // 필요 시 포커스 복귀
+        }
+      });
+    </script>
+  </body>
+</html>

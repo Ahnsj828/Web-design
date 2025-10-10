@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>정석 모달 (native & accessible)</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+      .btn {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      dialog {
+        border: none;
+        border-radius: 12px;
+        padding: 0;
+        width: min(480px, 92vw);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+      }
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.45);
+      }
+      .modal__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #eee;
+      }
+      .modal__body {
+        padding: 16px;
+      }
+      .modal__close {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main style="padding: 20px">
+      <button class="btn" id="openModal">모달 열기</button>
+    </main>
+
+    <!-- 네이티브 모달 -->
+    <dialog
+      id="modal"
+      aria-labelledby="modalTitle"
+      aria-describedby="modalDesc"
+    >
+      <div class="modal__header">
+        <h2 id="modalTitle" style="margin: 0">모달 제목</h2>
+        <button
+          type="button"
+          class="modal__close"
+          aria-label="닫기"
+          id="closeBtn"
+        >
+          ×
+        </button>
+      </div>
+      <div class="modal__body">
+        <p id="modalDesc">
+          이것은 네이티브 & 접근성 고려된 기본 모달 예시입니다.
+        </p>
+        <button class="btn" id="okBtn">확인</button>
+      </div>
+    </dialog>
+
+    <script>
+      const dialog = document.getElementById("modal");
+      const openBtn = document.getElementById("openModal");
+      const closeBtn = document.getElementById("closeBtn");
+      const okBtn = document.getElementById("okBtn");
+      let lastFocused = null;
+
+      openBtn.addEventListener("click", () => {
+        lastFocused = document.activeElement;
+        // showModal()가 배경을 inert 처리하고 ESC/backdrop 취소(cancal)도 처리
+        dialog.showModal();
+        // 첫 포커스 이동(버튼 등 첫 초점 요소 권장)
+        okBtn.focus();
+      });
+
+      // 닫기(버튼)
+      closeBtn.addEventListener("click", () => dialog.close());
+      okBtn.addEventListener("click", () => dialog.close());
+
+      // 닫힌 뒤 원래 포커스 복원
+      dialog.addEventListener("close", () => {
+        if (lastFocused?.focus) lastFocused.focus();
+      });
+
+      // 배경 클릭 닫기: dialog 영역 외 클릭 감지
+      dialog.addEventListener("click", (e) => {
+        const rect = dialog.getBoundingClientRect();
+        const inDialog =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+        if (!inDialog) dialog.close();
+      });
+
+      // ESC 기본 취소(cancal) 허용(기본값). 막고 싶으면 preventDefault()
+      dialog.addEventListener("cancel", (e) => {
+        // e.preventDefault(); // ESC로 닫히지 않게 하려면 주석 해제
+      });
+    </script>
+  </body>
+</html>
