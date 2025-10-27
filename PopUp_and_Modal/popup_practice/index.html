@@ -14,5 +14,16 @@
     >
       window.open() 활용
     </button>
+    <button onclick="openPopup()">함수로 적용하는 방법</button>
+    <script>
+      function openPopup() {
+        // 팝업을 띄울 페이지 url
+        const popupURL = "https://www.naver.com";
+        // 팝업 창의 속성
+        const popupProperties = "width=600, height=400, scrollbars=yes";
+        // 팝업 창 열기
+        window.open(popupURL, "Popup", popupProperties);
+      }
+    </script>
   </body>
 </html>
