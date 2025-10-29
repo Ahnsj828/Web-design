@@ -16,7 +16,19 @@
     </button>
     <button onclick="openPopup()">함수로 적용하는 방법</button>
     <script>
+      // alert 활용
       alert("alert 활용한 팝업 창");
+
+      // confirm 활용
+      let confirm1 = confirm("confirm 활용한 팝업 창");
+
+      if (confirm1) {
+        alert("확인을 눌렀습니다.", "start");
+      } else {
+        alert("취소를 눌렀습니다.", "back");
+      }
+
+      // prompt 활용
       function openPopup() {
         // 팝업을 띄울 페이지 url
         const popupURL = "https://www.naver.com";
